@@ -1,0 +1,45 @@
+diff -ruN a/src/kotlin/script/experimental/api/replData.kt b/src/kotlin/script/experimental/api/replData.kt
+--- a/src/kotlin/script/experimental/api/replData.kt	2026-11-12 10:06:10.263431546 +0100
++++ b/src/kotlin/script/experimental/api/replData.kt	2026-11-12 10:27:47.763744180 +0100
+@@ -102,7 +102,7 @@
+     val ctx = ScriptConfigurationRefinementContext(script, this, collectedData)
+     for (data in handlers) {
+         when (val res = data.handler.invoke(ctx)) {
+-            is ResultWithDiagnostics.Success -> res.value.let { [cfg, snippet] ->
++            is ResultWithDiagnostics.Success -> res.value.let { (cfg, snippet) ->
+                 resultingConfiguration = cfg
+                 if (snippet != null) allSnippets.add(snippet)
+             }
+diff -ruN a/src/kotlin/script/experimental/util/propertiesCollection.kt b/src/kotlin/script/experimental/util/propertiesCollection.kt
+--- a/src/kotlin/script/experimental/util/propertiesCollection.kt	2026-11-12 10:06:10.264126771 +0100
++++ b/src/kotlin/script/experimental/util/propertiesCollection.kt	2026-11-12 10:27:47.764431178 +0100
+@@ -77,7 +77,7 @@
+     fun entries(): Set<Map.Entry<Key<*>, Any?>> = properties.entries
+ 
+     val notTransientData: Map<Key<*>, Any?>
+-        get() = properties.filter { [key, value] -> key !is TransientKey<*> && value is Serializable }
++        get() = properties.filter { (key, value) -> key !is TransientKey<*> && value is Serializable }
+ 
+     fun isEmpty(): Boolean = properties.isEmpty()
+ 
+@@ -231,17 +231,17 @@
+ 
+         @JvmName("invoke_kotlintype_map_from_kclass")
+         operator fun <K> Key<Map<K, KotlinType>>.invoke(vararg classes: Pair<K, KClass<*>>) {
+-            append(classes.map { [k, v] -> k to KotlinType(v) })
++            append(classes.map { (k, v) -> k to KotlinType(v) })
+         }
+ 
+         @JvmName("invoke_kotlintype_map_from_ktype")
+         operator fun <K> Key<Map<K, KotlinType>>.invoke(vararg types: Pair<K, KType>) {
+-            append(types.map { [k, v] -> k to KotlinType(v) })
++            append(types.map { (k, v) -> k to KotlinType(v) })
+         }
+ 
+         @JvmName("invoke_kotlintype_map_from_fqname")
+         operator fun <K> Key<Map<K, KotlinType>>.invoke(vararg fqnames: Pair<K, String>) {
+-            append(fqnames.map { [k, v] -> k to KotlinType(v) })
++            append(fqnames.map { (k, v) -> k to KotlinType(v) })
+         }
+ 
+         // direct manipulation - public - for usage in inline dsl methods and for extending dsl
